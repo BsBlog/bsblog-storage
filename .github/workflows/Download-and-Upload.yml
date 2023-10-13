@@ -41,7 +41,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Download file
-        run: aria2c --dir="/tmp/downloaded-file" --out="${{ inputs.File_name }}" –-referer="${{ inputs.Referer }}" --user-agent="${{ inputs.User_Agent }}" --max-tries=0 --continue=true --max-connection-per-server=64 --split=64 "${{ inputs.Download_URL }}"
+        run: |
+         aria2c --dir="/tmp/downloaded-file" --out="${{ inputs.File_name }}" –-referer="${{ inputs.Referer }}" --user-agent="${{ inputs.User_Agent }}" --max-tries=0 --continue=true --max-connection-per-server=64 --split=64 "${{ inputs.Download_URL }}"
   
   # Upload-artifact:
   #   needs: Download
@@ -68,5 +69,34 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           artifacts: |
-            /tmp/downloaded-file/*.*
-          allowUpdat
+            /tmp/downloaded-file/*
+          name: "${{ inputs.Release_name }}"
+          body: "${{ inputs.Release_name }}"
+          tag: "${{ inputs.Tag_name }}"
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          prerelease: true
+          token: ${{ secrets.PAT }}
+
+  Delete:
+    needs: [Download,Upload]
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+    steps:
+      - name: Delete old file
+        run: |
+         rm -rf /tmp/downloaded-file/*
+
+  Delete-old-workflow-run:
+    needs: [Download,Upload,Delete]
+    if: ${{ always() }}
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+    steps:
+    - name: Delete old workflow run using Personal Token
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        token: ${{ secrets.PAT }}
+        repository: ${{ github.repository }}
+        retain_days: 0
+        keep_minimum_runs: 0
