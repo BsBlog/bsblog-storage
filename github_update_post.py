@@ -1,3 +1,9 @@
+# +---------------------------------------------------------------------+
+# | Modified from AnWen <https://github.com/anwen-anyi>                 |
+# +---------------------------------------------------------------------+
+# | For the unmodified version you can ask in <https://t.me/alist_chat> |
+# +---------------------------------------------------------------------+
+
 import requests
 import os
 import time
