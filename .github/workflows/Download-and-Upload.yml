@@ -37,8 +37,8 @@ on:
 
 jobs:
   Download:
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
     steps:
       - name: Download file
         run: |
@@ -63,8 +63,8 @@ jobs:
   
   Upload:
     needs: Download
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
     steps:
       # - name: Download artifact form job Download
       #   uses: actions/download-artifact@main
@@ -86,8 +86,8 @@ jobs:
 
   Delete:
     needs: [Download,Upload]
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
     steps:
       - name: Delete old file
         run: |
@@ -96,8 +96,8 @@ jobs:
   Delete-old-workflow-run:
     needs: [Download,Upload,Delete]
     if: ${{ always() }}
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
     steps:
     - name: Delete old workflow run using Personal Token
       uses: Mattraks/delete-workflow-runs@main
