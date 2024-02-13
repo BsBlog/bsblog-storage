@@ -44,11 +44,7 @@ jobs:
         run: |
          sudo apt-get update
          sudo apt-get install aria2 rar python3 -y
-         wget https://github.com/P3TERX/aria2.conf/raw/master/dht.dat
-         wget https://github.com/P3TERX/aria2.conf/raw/master/dht6.dat
-         wget https://github.com/ngosang/trackerslist/raw/master/trackers_all.txt
-         tracker_list=`cat trackers_all.txt | sed ':label;N;s/\n\n/,/;b label'`
-         aria2c --dir="/tmp/downloaded-file" --out="${{ inputs.File_name }}" –-referer="${{ inputs.Referer }}" --user-agent="${{ inputs.User_Agent }}" --max-tries=0 --continue=true --max-connection-per-server=64 --split=64 "${{ inputs.Download_URL }}"
+         aria2c --dir="/tmp/downloaded-file" --out="${{ inputs.File_name }}" –-referer="${{ inputs.Referer }}" --user-agent="${{ inputs.User_Agent }}" --max-tries=0 --continue=true --max-connection-per-server=16 --split=64 "${{ inputs.Download_URL }}"
   
   # Upload-artifact:
   #   needs: Download
