@@ -36,7 +36,7 @@ on:
     
 
 jobs:
-  Download:
+  Download-Upload:
     runs-on: ubuntu-latest
     # runs-on: self-hosted
     steps:
@@ -45,28 +45,13 @@ jobs:
          sudo apt-get update
          sudo apt-get install aria2 rar python3 -y
          aria2c --dir="/tmp/downloaded-file" --out="${{ inputs.File_name }}" –-referer="${{ inputs.Referer }}" --user-agent="${{ inputs.User_Agent }}" --max-tries=0 --continue=true --max-connection-per-server=16 --split=64 "${{ inputs.Download_URL }}"
+ 
+  #    - name: Upload artifact
+  #      uses: actions/upload-artifact@main
+  #      with:
+  #        name: ${{ inputs.Release_name }}
+  #        path: /tmp/downloaded-file/
   
-  # Upload-artifact:
-  #   needs: Download
-  #   # runs-on: ubuntu-latest
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Upload artifact
-  #       uses: actions/upload-artifact@main
-  #       with:
-  #         name: ${{ inputs.Release_name }}
-  #         path: /tmp/downloaded-file/
-  
-  Upload:
-    needs: Download
-    runs-on: ubuntu-latest
-    # runs-on: self-hosted
-    steps:
-      # - name: Download artifact form job Download
-      #   uses: actions/download-artifact@main
-      #   with:
-      #     name: ${{ inputs.File_name }}
-      #     path: /tmp/downloaded-file/
       - name: Create Release and Upload Release Asset
         uses: ncipollo/release-action@main
         with:
@@ -80,17 +65,17 @@ jobs:
           prerelease: true
           token: ${{ secrets.PAT }}
 
-  Delete:
-    needs: [Download,Upload]
-    runs-on: ubuntu-latest
-    # runs-on: self-hosted
-    steps:
-      - name: Delete old file
-        run: |
-         rm -rf /tmp/downloaded-file/*
+  # Delete:
+  #   needs: [Download,Upload]
+  #   runs-on: ubuntu-latest
+  #   # runs-on: self-hosted
+  #   steps:
+  #     - name: Delete old file
+  #       run: |
+  #        rm -rf /tmp/downloaded-file/*
 
   Delete-old-workflow-run:
-    needs: [Download,Upload,Delete]
+    needs: [Download-Upload]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     # runs-on: self-hosted
